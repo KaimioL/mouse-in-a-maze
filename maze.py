@@ -25,11 +25,14 @@ def solution_to_string(maze, end):
             
             # If neighbour value is one less than current cells original value, chance its value to -3 to mark it as cell in optimal path
             elif maze[c[0]][c[1]] == i:
-                maze[c[0]][c[1]] = -3
+                if i == 1:
+                    maze[c[0]][c[1]] = -4
+                else:
+                    maze[c[0]][c[1]] = -3
                 cell = c
                 break
     
-    maze[end[0]][end[1]] = -3
+    maze[end[0]][end[1]] = -5
     
     # Generate string out of the maze matrix
     s = ""
@@ -40,6 +43,10 @@ def solution_to_string(maze, end):
                 s += "#"
             elif j == -3:
                 s += "."
+            elif j == -4:
+                s += "S"
+            elif j == -5:
+                s += "E"
             else:
                 s += " "
         s += "\n"
