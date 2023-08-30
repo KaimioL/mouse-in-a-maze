@@ -1,10 +1,14 @@
 import sys
+import copy
 
 def solution_to_string(maze, end):
     # Returns solved maze as string
 
     # Negative coordinates indicate that maze has no solution
     if end == (-1, -1):
+        return "No solution"
+
+    elif end == (-2, -2):
         return "No solution"
 
     # Start from the last cell of the route
@@ -42,9 +46,10 @@ def solution_to_string(maze, end):
 
     return s
     
-def bfs_maze_solver(maze, start):
+def bfs_maze_solver(input_maze, start, max_steps):
     # The algorithm uses breadth-first search to find the shortest route out of the maze
 
+    maze = copy.deepcopy(input_maze)
     current_queue = [start]
     next_queue = []
     index = 1
@@ -52,7 +57,7 @@ def bfs_maze_solver(maze, start):
     # Set starting position value to one
     maze[start[0]][start[1]] = index
 
-    while True:
+    while index < max_steps:
         # Every steps cells are marked with one higher value
         index += 1
 
@@ -72,11 +77,14 @@ def bfs_maze_solver(maze, start):
                     return maze, cell
                 maze[cell[0]][cell[1]] = index
 
-        # If next steps queue is empty after iterating, maze has no solutions and negative value coordinates are returned
+        # If next steps queue is empty after iterating, maze has no solutions and -1 value coordinates are returned
         if len(next_queue) == 0:
             return maze, (-1, -1)
         current_queue = next_queue
         next_queue = []
+    
+    # If no solution was found in maximum steps, -2 value coordinates are returned
+    return maze, (-2, -2)
 
 def get_unvisited_neighbours(maze, cell):
     # Returns list of all neighbours of a given cell which have not yet visited
@@ -133,8 +141,17 @@ def main(argv):
         return
     
     maze, start = parse_maze_file(argv[0])
-    solution, end_coords = bfs_maze_solver(maze, start)
-    print(solution_to_string(solution, end_coords))
+    solution, end_coords = bfs_maze_solver(maze, start, 20)
+
+    if end_coords == (-1, -1):
+        print("Maze can't be solved")
+        return
+    
+    print("Max 20 steps: \n" + solution_to_string(solution, end_coords))
+    solution, end_coords = bfs_maze_solver(maze, start, 150)
+    print("Max 150 steps: \n" + solution_to_string(solution, end_coords))
+    solution, end_coords = bfs_maze_solver(maze, start, 200)
+    print("Max 200 steps: \n" + solution_to_string(solution, end_coords))
 
 if __name__ == "__main__":
     main(sys.argv[1:])
