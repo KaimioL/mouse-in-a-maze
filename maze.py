@@ -39,7 +39,7 @@ def solution_to_string(maze, end):
             if j == -1:
                 s += "#"
             elif j == -3:
-                s += "*"
+                s += "."
             else:
                 s += " "
         s += "\n"
