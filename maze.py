@@ -1,4 +1,6 @@
-def print_solution(maze, end):
+import sys
+
+def solution_to_string(maze, end):
     if end == (-1, -1):
         print("No solution")
 
@@ -17,15 +19,19 @@ def print_solution(maze, end):
     
     maze[end[0]][end[1]] = -3
     
+    s = ""
+
     for i in maze:
         for j in i:
             if j == -1:
-                print("#", end="")
+                s += "#"
             elif j == -3:
-                print("*", end="")
+                s += "*"
             else:
-                print(" ", end="")
-        print()
+                s += " "
+        s += "\n"
+
+    return s
     
 
 def bfs_maze_solver(maze, start):
@@ -89,11 +95,13 @@ def parse_maze_file(file_path):
         i += 1
     return maze, start
 
-def main():
-    maze, start = parse_maze_file("maze-task-first.txt")
-    print(start)
-    maze, end = bfs_maze_solver(maze, start)
-    print_solution(maze, end)
+def main(argv):
+    if len(argv) == 0:
+        print("Missing input file")
+        return
+    maze, start = parse_maze_file(argv[0])
+    solution, end_coords = bfs_maze_solver(maze, start)
+    print(solution_to_string(solution, end_coords))
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
